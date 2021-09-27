@@ -3,14 +3,11 @@ import {View,
     Text, 
     StyleSheet, 
     FlatList, 
-    Button,
-TouchableOpacity, Platform} from 'react-native'
+} from 'react-native'
 import CategoryGridTitle from '../components/CategoryGridTile'
-import Colors from '../constants/Colors'
-
+import { HeaderButtons, Item } from 'react-navigation-header-buttons'
+import HeaderButton from '../components/HeaderButton'
 import { CATEGORIES } from '../data/dummy-data'
-
-
 
 const CategoriesScreen = props => {
 
@@ -34,13 +31,6 @@ const CategoriesScreen = props => {
     }
 
     return (
-        // <View style={styles.screen}>
-        //     <Text>The Categories Screen!</Text>
-        //     <Button title="Go to Meals" 
-        //         onPress={() => {
-        //             navigation.navigate({routeName: 'CategoryMeals'})
-        //         }} />
-        // </View>
         <FlatList 
             keyExtractor={(item, index) => item.id}
             renderItem={renderGridItem}
@@ -48,6 +38,26 @@ const CategoriesScreen = props => {
             numColumns={2}
         />
     )
+}
+
+CategoriesScreen.navigationOptions = navData => {
+    return {
+        headerTitle: "Meal Categories",
+        headerLeft: () => {
+            return (
+                <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                    <Item 
+                        title="Menu" 
+                        iconName="ios-menu"  
+                        onPress={() => {
+                            navData.navigation.toggleDrawer();
+                        }}
+                        
+                    />
+                </HeaderButtons>
+            )
+        }
+    }
 }
 
 const styles = StyleSheet.create({

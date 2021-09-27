@@ -1,7 +1,8 @@
 import React from 'react'
-import {View, Text, StyleSheet, Button, Platform} from 'react-native'
-import Colors from '../constants/Colors'
+import MealList from '../components/MealList'
 import { CATEGORIES } from '../data/dummy-data'
+import { useSelector } from 'react-redux'
+import { Text, View, StyleSheet } from 'react-native'
 
 
 const CategoryMealsScreen = props => {
@@ -10,36 +11,36 @@ const CategoryMealsScreen = props => {
 
     const catId = navigation.getParam('categoryId')
 
-    const selectedCategory = CATEGORIES.find((cat) => cat.id === catId)
+    const availableMeals = useSelector(state => state.meals.filteredMeals)
+
+    const displayedMeals = availableMeals.filter(meal => meal.categoryIds.indexOf(catId) >= 0)
+
+    if(displayedMeals.length === 0) {
+        return (
+            <View style={styles.content}>
+                <Text>Filtered Meals are not found.</Text>
+            </View>
+        )
+    }
 
     return (
-        <View style={styles.screen}>
-            <Text>The Category Meals Screen!</Text>
-            <Text>{selectedCategory.title}</Text>
-            <Button title="Go to Details" 
-                onPress={() => {
-                    navigation.navigate({routeName: 'MealDetail'})
-                }} />
-            <Button title="Go Back" 
-                onPress={() => {
-                    navigation.goBack()
-                }} />
-        </View>
+        <MealList
+            displayedMeals={displayedMeals}
+            navigation={navigation}
+        />
     )
 }
 
 CategoryMealsScreen.navigationOptions = navigationData => {
-
     const catId = navigationData.navigation.getParam('categoryId')
     const selectedCategory = CATEGORIES.find((cat) => cat.id === catId)
-   
     return {
         headerTitle: selectedCategory.title
     }
 }
 
 const styles = StyleSheet.create({
-    screen: {
+    content: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
